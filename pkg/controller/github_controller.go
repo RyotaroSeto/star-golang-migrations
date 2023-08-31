@@ -3,28 +3,34 @@ package controller
 import (
 	"context"
 	"log"
-	"star-golang-migrations/pkg/di"
+	"star-golang-migrations/pkg/application"
 )
 
-func Start(ctx context.Context, token string) error {
-	ghs := di.InitializeGitHubController()
-	gh, err := ghs.ExecGitHubAPI(ctx, token)
+type GitHubController struct {
+	service application.GitHubService
+}
+
+func NewGitHubController(service application.GitHubService) *GitHubController {
+	return &GitHubController{service: service}
+}
+
+func Run(ctx context.Context, token string, ghs *GitHubController) error {
+	err := ghs.service.ExecGitHubAPI(ctx, token)
 	if err != nil {
 		return err
 	}
+	log.Println(ghs)
 
-	log.Println(gh)
-	// err = gh.SortDesByStarCount()
+	// if err := ghs.service.SortDesByStarCount(); err != nil {
+	// 	return err
+	// }
+
+	// err = ghs.service.MakeChart()
 	// if err != nil {
 	// 	return err
 	// }
 
-	// err = gh.MakeChart()
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = gh.Edit()
+	// err = ghs.service.Edit()
 	// if err != nil {
 	// 	return err
 	// }

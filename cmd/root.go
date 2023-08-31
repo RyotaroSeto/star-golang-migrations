@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"star-golang-migrations/configs"
 	"star-golang-migrations/pkg/controller"
+	"star-golang-migrations/pkg/di"
 	"syscall"
 )
 
@@ -20,8 +21,8 @@ func Execute() {
 		return
 	}
 
-	err = controller.Start(ctx, config.GithubToken)
-	if err != nil {
+	ghs := di.InitializeGitHubController()
+	if err = controller.Run(ctx, config.GithubToken, ghs); err != nil {
 		log.Fatal(err)
 		return
 	}
